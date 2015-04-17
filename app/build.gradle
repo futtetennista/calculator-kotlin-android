@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+buildscript {
+  repositories { mavenCentral()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+  }
+}
+
+android {
+  compileSdkVersion 21
+  buildToolsVersion '21.1.2'
+
+  defaultConfig {
+    applicationId "com.stefanodacchille.playground.calculator"
+    minSdkVersion 19
+    targetSdkVersion 21
+    versionCode 1
+    versionName "1.0"
+  }
+
+  buildTypes {
+    debug {
+
+    }
+
+    release {
+      minifyEnabled true
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+
+  sourceSets.main.java.srcDirs += 'src/main/kotlin'
+
+//  applicationVariants.all { v ->
+//    v.buildType.each { t ->
+//      def sourceSet = sourceSets.findAll { it.name == t.name }
+//      sourceSet.first().java.srcDirs += "src/${t.name}/kotlin"
+//    }
+//  }
+}
+
+dependencies {
+  provided "com.google.dagger:dagger-compiler:$daggerVersion"
+
+  compile "com.android.support:appcompat-v7:$appCompatVersion"
+  compile "org.jetbrains.anko:anko:$ankoVersion"
+  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+  compile 'io.reactivex:rxkotlin:0.22.12'
+  compile 'io.reactivex:rxandroid:0.24.0'
+  compile "com.google.dagger:dagger:$daggerVersion"
+}
+repositories {
+  mavenCentral()
+}
