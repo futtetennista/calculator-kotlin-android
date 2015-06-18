@@ -23,9 +23,7 @@ public class Screen : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val text: DisplayNumber = DisplayNumber.fromBundle(savedInstanceState)
-
-    buildLayout(text)
+    buildLayout(DisplayNumber.fromBundle(savedInstanceState))
 
     subscription = ReactiveModel.updateObservable.subscribe { state -> updateDisplay(state) }
   }

@@ -11,21 +11,17 @@ public class ReactiveModel {
 
     val actionSubject = PublishSubject<Action>()
 
-    val updateObservable = actionSubject.scan(State.initialState,
-        object : Func2<State, Action, State> {
-          override fun call(state: State, action: Action): State {
-            when (action) {
-              Action.ADD, Action.DIV, Action.MUL, Action.SUB ->
-                return applyBinaryOperation(action, state)
-              Action.EQUALS -> return applyEquals(state)
-              Action.DECIMAL -> return applyDecimal(state)
-              Action.NEGATE -> return applyNegate(state)
-              Action.PERCENT -> return applyPercent(state)
-              Action.CLEAR -> return State.initialState
-              else -> return applyDigit(action, state)
-            }
-          }
-        })
+    val updateObservable = actionSubject.scan(State.initialState, { state, action ->
+      when (action) {
+        Action.ADD, Action.DIV, Action.MUL, Action.SUB -> applyBinaryOperation(action, state)
+        Action.EQUALS -> applyEquals(state)
+        Action.DECIMAL -> applyDecimal(state)
+        Action.NEGATE -> applyNegate(state)
+        Action.PERCENT -> applyPercent(state)
+        Action.CLEAR -> State.initialState
+        else -> applyDigit(action, state)
+      }
+    })
 
     private fun applyDigit(action: Action, state: State): State {
       when (state) {
