@@ -1,13 +1,27 @@
 package com.stefanodacchille.playground
 
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 
-data class DisplayNumber(val negative: Boolean, val value: String, val percent: Int) {
+data class DisplayNumber(val negative: Boolean, val value: String, val percent: Int) : Parcelable {
+
+  override fun writeToParcel(dest: Parcel, flags: Int) {
+    dest.writeInt(if (negative) 0 else 1)
+    dest.writeString(value)
+    dest.writeInt(percent)
+  }
+
+  override fun describeContents(): Int {
+    return 0
+  }
 
   fun toDisplay(): String {
     var displayValue = value.toFloat()
-    if (this.negative) displayValue = value.toFloat().minus()
-    for (i in 0..this.percent) {
+    if (this.negative) {
+      displayValue = value.toFloat().minus()
+    }
+    for (i in 1..this.percent) {
       displayValue /= 100
     }
     return displayValue.toString()
@@ -27,7 +41,17 @@ data class DisplayNumber(val negative: Boolean, val value: String, val percent: 
 
   companion object {
 
-    val zero = DisplayNumber(negative = false, value = "", percent = 0)
+    var CREATOR = object : Parcelable.Creator<DisplayNumber> {
+      override fun newArray(size: Int): Array<out DisplayNumber>? {
+        return newArray(size)
+      }
+
+      override fun createFromParcel(source: Parcel): DisplayNumber? {
+        return DisplayNumber(source.readInt() > 0, source.readString(), source.readInt())
+      }
+    }
+
+    val zero = DisplayNumber(negative = false, value = "0", percent = 0)
 
     fun fromBundle(s: Bundle?): DisplayNumber {
       if (s == null) return zero
@@ -37,17 +61,8 @@ data class DisplayNumber(val negative: Boolean, val value: String, val percent: 
           percent = s.getInt("extra_displaynumber_percent"));
     }
 
-    fun toBundle(dn: DisplayNumber): Bundle {
-      var b = Bundle()
-      b.putBoolean("extra_displaynumber_negative", dn.negative)
-      b.putString("extra_displaynumber_value", dn.value)
-      b.putInt("extra_displaynumber_percent", dn.percent)
-      return b
-    }
-
-
     fun fromFloat(number: Float): DisplayNumber {
-      val negative = number > 0
+      val negative = number < 0
       val numberAsString = number.toString()
       val value = if (negative) numberAsString.drop(1) else numberAsString
       return DisplayNumber(negative, value, 0)
