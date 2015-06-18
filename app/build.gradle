@@ -11,13 +11,18 @@ buildscript {
   }
 }
 
+repositories {
+  mavenCentral()
+  maven { url "http://repository.jetbrains.com/all" }
+}
+
 android {
   compileSdkVersion 21
   buildToolsVersion '21.1.2'
 
   defaultConfig {
     applicationId "com.stefanodacchille.playground.calculator"
-    minSdkVersion 19
+    minSdkVersion 16
     targetSdkVersion 21
     versionCode 1
     versionName "1.0"
@@ -25,7 +30,6 @@ android {
 
   buildTypes {
     debug {
-
     }
 
     release {
@@ -40,6 +44,7 @@ android {
   }
 
   sourceSets.main.java.srcDirs += 'src/main/kotlin'
+  sourceSets.test.java.srcDirs += 'src/test/kotlin'
 
 //  applicationVariants.all { v ->
 //    v.buildType.each { t ->
@@ -50,15 +55,12 @@ android {
 }
 
 dependencies {
-  provided "com.google.dagger:dagger-compiler:$daggerVersion"
-
   compile "com.android.support:appcompat-v7:$appCompatVersion"
-  compile "org.jetbrains.anko:anko:$ankoVersion"
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-  compile 'io.reactivex:rxkotlin:0.22.12'
-  compile 'io.reactivex:rxandroid:0.24.0'
-  compile "com.google.dagger:dagger:$daggerVersion"
-}
-repositories {
-  mavenCentral()
+  compile "org.jetbrains.anko:anko:$ankoVersion"
+  compile "io.reactivex:rxkotlin:$rxKotlinVersion"
+
+  testCompile("org.jetbrains.spek:spek:$spekVersion") {
+    exclude group: 'org.jetbrains.kotlin'
+  }
 }
