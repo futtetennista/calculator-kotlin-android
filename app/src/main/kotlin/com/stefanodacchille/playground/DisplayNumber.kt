@@ -34,7 +34,7 @@ data class DisplayNumber(val negative: Boolean = false, val value: String, val p
     }
 
     return if (decimalValue.isInteger()) {
-      decimalValue.toString().takeWhile { it != '.' }
+      java.lang.String.format("%.0f", decimalValue)
     } else {
       decimalValue.toString()
     }
