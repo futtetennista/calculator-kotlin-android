@@ -2,7 +2,7 @@ package com.stefanodacchille.playground
 
 import rx.lang.kotlin.PublishSubject
 
-public class ReactiveModel {
+ class ReactiveModel {
 
   companion object {
 

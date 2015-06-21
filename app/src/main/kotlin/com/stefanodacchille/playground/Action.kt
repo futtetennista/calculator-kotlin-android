@@ -8,4 +8,11 @@ enum class Action {
   // unary operations
   PERCENT, NEGATE, DECIMAL,
   EQUALS, CLEAR
+
+  companion object {
+
+    fun digits() : Array<Action> {
+      return arrayOf(ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE)
+    }
+  }
 }
