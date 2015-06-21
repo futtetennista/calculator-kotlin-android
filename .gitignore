@@ -28,3 +28,4 @@ proguard/
 
 # IntelliJ
 *.iml
+.idea/
