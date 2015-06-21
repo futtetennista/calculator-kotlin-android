@@ -43,8 +43,10 @@ android {
     targetCompatibility JavaVersion.VERSION_1_7
   }
 
-  sourceSets.main.java.srcDirs += 'src/main/kotlin'
-  sourceSets.test.java.srcDirs += 'src/test/kotlin'
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += 'src/test/kotlin'
+  }
 
 //  applicationVariants.all { v ->
 //    v.buildType.each { t ->

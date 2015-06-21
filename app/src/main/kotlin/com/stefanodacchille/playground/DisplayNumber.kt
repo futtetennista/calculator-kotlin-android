@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 
-data class DisplayNumber(val negative: Boolean, val value: String, val percent: Int) : Parcelable {
+data class DisplayNumber(val negative: Boolean = false, val value: String, val percent: Int = 0) :
+    Parcelable {
 
   override fun writeToParcel(dest: Parcel, flags: Int) {
     dest.writeInt(if (negative) 0 else 1)
@@ -17,14 +18,15 @@ data class DisplayNumber(val negative: Boolean, val value: String, val percent: 
   }
 
   fun toDisplay(): String {
-    var displayValue = value.toFloat()
+    var floatValue = value.toFloat()
     if (this.negative) {
-      displayValue = value.toFloat().minus()
+      floatValue = floatValue.minus()
     }
     for (i in 1..this.percent) {
-      displayValue /= 100
+      floatValue /= 100
     }
-    return displayValue.toString()
+
+    return floatValue.toString().replace(".0", "")
   }
 
   fun toFloat(): Float {
@@ -51,15 +53,7 @@ data class DisplayNumber(val negative: Boolean, val value: String, val percent: 
       }
     }
 
-    val zero = DisplayNumber(negative = false, value = "0", percent = 0)
-
-    fun fromBundle(s: Bundle?): DisplayNumber {
-      if (s == null) return zero
-
-      return DisplayNumber(negative = s.getBoolean("extra_displaynumber_negative"),
-          value = s.getString("extra_displaynumber_value"),
-          percent = s.getInt("extra_displaynumber_percent"));
-    }
+    val zero = DisplayNumber(value = "0")
 
     fun fromFloat(number: Float): DisplayNumber {
       val negative = number < 0
