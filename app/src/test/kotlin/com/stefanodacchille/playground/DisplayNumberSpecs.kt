@@ -8,36 +8,42 @@ class DisplayNumberSpecs : Spek() {
   init {
     given("a display number") {
 
-      on("displaying a positive number") {
+      on("representing a positive number") {
         val number = DisplayNumber(value = "123").toDisplay()
-        it("should return positive number") {
+        it("should display positive number") {
           assertEquals("123", number)
         }
         val percentageNumber = DisplayNumber(value = "123", percent = 1).toDisplay()
-        it("should return percentage number") {
+        it("should display a positive decimal number") {
           assertEquals("1.23", percentageNumber)
         }
       }
 
-      on("displaying a negative number") {
+      on("representing zero") {
+        it("should display zero") {
+          assertEquals("0", DisplayNumber.zero.toDisplay())
+        }
+      }
+
+      on("representing a negative number") {
         val number = DisplayNumber(negative = true, value = "123").toDisplay()
-        it("should return negative number") {
+        it("should display negative number") {
           assertEquals("-123", number)
         }
         val percentageNumber = DisplayNumber(negative = true, value = "123", percent = 2).toDisplay()
-        it("should return negative percentage number") {
+        it("should display a negative decimal number") {
           assertEquals("-0.0123", percentageNumber)
         }
       }
 
-      on("displaying not a number") {
-        it("should display error message") {
+      on("representing not a number") {
+        it("should display an error message") {
           assertEquals("Not a number", DisplayNumber.fromDecimal(Double.NaN).toDisplay())
         }
       }
 
-      on("displaying infinity") {
-        it("should display error message") {
+      on("representing infinity") {
+        it("should display an error message") {
           val errorMessage = "You asked me too much"
           assertEquals(errorMessage,
               DisplayNumber.fromDecimal(Double.POSITIVE_INFINITY).toDisplay())
