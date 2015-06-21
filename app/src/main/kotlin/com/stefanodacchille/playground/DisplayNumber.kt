@@ -1,6 +1,5 @@
 package com.stefanodacchille.playground
 
-import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -18,19 +17,31 @@ data class DisplayNumber(val negative: Boolean = false, val value: String, val p
   }
 
   fun toDisplay(): String {
-    var floatValue = value.toFloat()
+    var decimalValue = value.toDouble()
+
+    if (decimalValue.isNaN()) {
+      return "Not a number"
+    }
+    if (decimalValue.isInfinite()) {
+      return "You asked me too much"
+    }
+
     if (this.negative) {
-      floatValue = floatValue.minus()
+      decimalValue = decimalValue.minus()
     }
     for (i in 1..this.percent) {
-      floatValue /= 100
+      decimalValue /= 100
     }
 
-    return floatValue.toString().replace(".0", "")
+    return if (decimalValue.isInteger()) {
+      decimalValue.toString().takeWhile { it != '.' }
+    } else {
+      decimalValue.toString()
+    }
   }
 
-  fun toFloat(): Float {
-    var baseValue: Float = value.toFloat()
+  fun toDecimal(): Double {
+    var baseValue: Double = value.toDouble()
     if (this.negative) {
       baseValue *= -1
     }
@@ -55,11 +66,15 @@ data class DisplayNumber(val negative: Boolean = false, val value: String, val p
 
     val zero = DisplayNumber(value = "0")
 
-    fun fromFloat(number: Float): DisplayNumber {
+    fun fromDecimal(number: Double): DisplayNumber {
       val negative = number < 0
       val numberAsString = number.toString()
       val value = if (negative) numberAsString.drop(1) else numberAsString
       return DisplayNumber(negative, value, 0)
     }
   }
+}
+
+fun Double.isInteger(): Boolean {
+  return Math.floor(this) == this && !isNaN() && !isInfinite()
 }

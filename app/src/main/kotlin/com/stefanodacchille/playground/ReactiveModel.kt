@@ -1,9 +1,6 @@
 package com.stefanodacchille.playground
 
-import rx.Observable
-import rx.functions.Func2
 import rx.lang.kotlin.PublishSubject
-import rx.subjects.Subject
 
 public class ReactiveModel {
 
@@ -42,7 +39,7 @@ public class ReactiveModel {
           return state.copy(displayNumber = state.displayNumber.copy(value = newValue))
         }
         is State.Error ->
-          return State.Init(displayNumber = DisplayNumber.fromFloat(action.ordinal().toFloat()))
+          return State.Init(displayNumber = DisplayNumber.fromDecimal(action.ordinal().toDouble()))
         else -> throw AssertionError("Unknown state $state")
       }
     }
@@ -65,7 +62,7 @@ public class ReactiveModel {
     private fun applyBinaryOperation(a: Action, state: State): State {
       when (state) {
         is State.Init ->
-          return State.Operation(state.displayNumber.toFloat(), a, DisplayNumber.zero)
+          return State.Operation(state.displayNumber.toDecimal(), a, DisplayNumber.zero)
         is State.Operation -> {
           try {
             return state.copy(action = a, displayNumber = DisplayNumber.zero)
@@ -81,7 +78,7 @@ public class ReactiveModel {
     private fun applyEquals(state: State): State {
       when (state) {
         is State.Operation -> {
-          val result = applyBinaryOperation(state.left, state.action, state.displayNumber.toFloat())
+          val result = applyBinaryOperation(state.left, state.action, state.displayNumber.toDecimal())
           return state.copy(left = result, displayNumber = DisplayNumber.zero)
         }
         else -> return state
@@ -122,16 +119,16 @@ public class ReactiveModel {
       }
     }
 
-    private fun applyBinaryOperation(left: Float, action: Action, right: Float): Float {
+    private fun applyBinaryOperation(left: Double, action: Action, right: Double): Double {
       return toBinaryOperation(action) (left, right)
     }
 
-    private fun toBinaryOperation(action: Action): (Float, Float) -> Float {
+    private fun toBinaryOperation(action: Action): (Double, Double) -> Double {
       when (action) {
-        Action.ADD -> return { x: Float, y: Float -> x + y }
-        Action.SUB -> return { x: Float, y: Float -> x - y }
-        Action.DIV -> return { x: Float, y: Float -> x / y }
-        Action.MUL -> return { x: Float, y: Float -> x * y }
+        Action.ADD -> return { x: Double, y: Double -> x + y }
+        Action.SUB -> return { x: Double, y: Double -> x - y }
+        Action.DIV -> return { x: Double, y: Double -> x / y }
+        Action.MUL -> return { x: Double, y: Double -> x * y }
         else -> throw AssertionError("Unknown binary action ${action.name()}")
       }
     }

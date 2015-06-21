@@ -23,7 +23,8 @@ public class Screen : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    buildLayout(DisplayNumber.fromBundle(savedInstanceState))
+    // TODO: persist state
+    buildLayout(DisplayNumber.zero)
 
     subscription = ReactiveModel.updateObservable.subscribe { state -> updateDisplay(state) }
   }
