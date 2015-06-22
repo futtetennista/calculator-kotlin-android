@@ -17,20 +17,13 @@ data class DisplayNumber(val negative: Boolean = false, val value: String, val p
   }
 
   fun toDisplay(): String {
-    var decimalValue = value.toDouble()
+    var decimalValue = toDecimal()
 
     if (decimalValue.isNaN()) {
       return "Not a number"
     }
     if (decimalValue.isInfinite()) {
       return "You asked me too much"
-    }
-
-    if (this.negative) {
-      decimalValue = decimalValue.minus()
-    }
-    for (i in 1..this.percent) {
-      decimalValue /= 100
     }
 
     return if (decimalValue.isInteger()) {
@@ -42,13 +35,20 @@ data class DisplayNumber(val negative: Boolean = false, val value: String, val p
 
   fun toDecimal(): Double {
     var baseValue: Double = value.toDouble()
-    if (this.negative) {
-      baseValue *= -1
+
+    if (baseValue.isNaN()) {
+      return Double.NaN
     }
-    if (this.percent > 0) {
-      baseValue /= this.percent
+    if (baseValue.isInfinite()) {
+      return if (negative) Double.NEGATIVE_INFINITY else Double.POSITIVE_INFINITY
     }
 
+    if (this.negative) {
+      baseValue = baseValue.minus()
+    }
+    for (i in 1..this.percent) {
+      baseValue /= 100
+    }
     return baseValue
   }
 

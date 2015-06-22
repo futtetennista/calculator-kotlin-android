@@ -88,9 +88,9 @@ import rx.lang.kotlin.PublishSubject
     private fun applyNegate(state: State?): State {
       when (state) {
         is State.Init ->
-          return State.Init(state.displayNumber.copy(negative = true))
+          return State.Init(state.displayNumber.copy(negative = !state.displayNumber.negative))
         is State.Operation -> {
-          val displayNumber = state.displayNumber.copy(negative = true)
+          val displayNumber = state.displayNumber.copy(negative = !state.displayNumber.negative)
           return state.copy(left = state.left, action = state.action, displayNumber = displayNumber)
         }
         is State.Error -> return state
