@@ -19,7 +19,7 @@ import rx.lang.kotlin.PublishSubject
         Action.CLEAR -> State.initialState
         else -> applyDigit(action, state)
       }
-    })
+    }).cache(1)
 
     private fun applyDigit(action: Action, state: State): State {
       when (state) {
