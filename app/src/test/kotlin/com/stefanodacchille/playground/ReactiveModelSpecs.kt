@@ -37,7 +37,6 @@ class ReactiveModelSpecs : Spek() {
 
       // TODO: Test this using https://github.com/pholser/junit-quickcheck
       on("applying a binary operation") {
-
         it("should save state correctly") {
           ReactiveModel.actionSubject.onNext(Action.CLEAR)
           ReactiveModel.actionSubject.onNext(Action.SIX)
@@ -59,7 +58,7 @@ class ReactiveModelSpecs : Spek() {
           ReactiveModel.actionSubject.onNext(Action.THREE)
           ReactiveModel.actionSubject.onNext(Action.EQUALS)
 
-          var expectedState = State.Operation(9.0, Action.ADD, DisplayNumber.zero)
+          var expectedState = State.Operation(9.0, Action.ADD, DisplayNumber.zero, 3.0)
           assertEquals(expectedState, currentState)
         }
       }
@@ -72,7 +71,7 @@ class ReactiveModelSpecs : Spek() {
           ReactiveModel.actionSubject.onNext(Action.SIX)
           ReactiveModel.actionSubject.onNext(Action.EQUALS)
 
-          val expectedState = State.Operation(-3.0, Action.SUB, DisplayNumber.zero)
+          val expectedState = State.Operation(-3.0, Action.SUB, DisplayNumber.zero, 6.0)
           assertEquals(expectedState, currentState)
         }
       }
@@ -85,7 +84,7 @@ class ReactiveModelSpecs : Spek() {
           ReactiveModel.actionSubject.onNext(Action.SIX)
           ReactiveModel.actionSubject.onNext(Action.EQUALS)
 
-          val expectedState = State.Operation(42.0, Action.MUL, DisplayNumber.zero)
+          val expectedState = State.Operation(42.0, Action.MUL, DisplayNumber.zero, 6.0)
           assertEquals(expectedState, currentState)
         }
       }
@@ -98,7 +97,7 @@ class ReactiveModelSpecs : Spek() {
           ReactiveModel.actionSubject.onNext(Action.FIVE)
           ReactiveModel.actionSubject.onNext(Action.EQUALS)
 
-          val expectedState = State.Operation(1.2, Action.DIV, DisplayNumber.zero)
+          val expectedState = State.Operation(1.2, Action.DIV, DisplayNumber.zero, 5.0)
           assertEquals(expectedState, currentState)
         }
       }
@@ -185,26 +184,67 @@ class ReactiveModelSpecs : Spek() {
       }
 
       on("applying an operation after a previous operation") {
-        it("should override the last operation with the most recent one") {
-          fail("Not implemented")
+        it("should execute last chosen operation") {
+          ReactiveModel.actionSubject.onNext(Action.CLEAR)
+          ReactiveModel.actionSubject.onNext(Action.SIX)
+          ReactiveModel.actionSubject.onNext(Action.ADD)
+          ReactiveModel.actionSubject.onNext(Action.MUL)
+          ReactiveModel.actionSubject.onNext(Action.SIX)
+          ReactiveModel.actionSubject.onNext(Action.EQUALS)
+
+          val expectedState = State.Operation(36.0, Action.MUL, DisplayNumber.zero, 6.0)
+          assertEquals(expectedState, currentState)
         }
       }
 
       on("getting the result of an operation") {
-        it("should have correct operation state") {
-          fail("Not implemented")
+        it("should apply the current operation") {
+          ReactiveModel.actionSubject.onNext(Action.CLEAR)
+          ReactiveModel.actionSubject.onNext(Action.SIX)
+          ReactiveModel.actionSubject.onNext(Action.ADD)
+          ReactiveModel.actionSubject.onNext(Action.ONE)
+          ReactiveModel.actionSubject.onNext(Action.EQUALS)
+
+          val expectedState = State.Operation(7.0, Action.ADD, DisplayNumber.zero, 1.0)
+          assertEquals(expectedState, currentState)
         }
       }
 
       on("getting the result of an operation multiple times") {
         it("should apply the given operations multiple times") {
-          fail("Not implemented")
+          ReactiveModel.actionSubject.onNext(Action.CLEAR)
+          ReactiveModel.actionSubject.onNext(Action.SIX)
+          ReactiveModel.actionSubject.onNext(Action.ADD)
+          ReactiveModel.actionSubject.onNext(Action.SIX)
+          ReactiveModel.actionSubject.onNext(Action.EQUALS)
+          ReactiveModel.actionSubject.onNext(Action.EQUALS)
+
+          val expectedState = State.Operation(18.0, Action.ADD, DisplayNumber.zero, 6.0)
+          assertEquals(expectedState, currentState)
         }
       }
 
-      on("clearing the current state") {
+      on("clearing the current state after entering a digit") {
         it("should have a zero initial state") {
           ReactiveModel.actionSubject.onNext(Action.SIX)
+          ReactiveModel.actionSubject.onNext(Action.CLEAR)
+          assertEquals(State.initialState, currentState)
+        }
+      }
+
+      on("clearing the current state after choosing an operation") {
+        it("should have a zero initial state") {
+          ReactiveModel.actionSubject.onNext(Action.SIX)
+          ReactiveModel.actionSubject.onNext(Action.ADD)
+          ReactiveModel.actionSubject.onNext(Action.CLEAR)
+          assertEquals(State.initialState, currentState)
+        }
+      }
+
+      on("clearing the current state after getting a result") {
+        it("should have a zero initial state") {
+          ReactiveModel.actionSubject.onNext(Action.SIX)
+          ReactiveModel.actionSubject.onNext(Action.ADD)
           ReactiveModel.actionSubject.onNext(Action.CLEAR)
           assertEquals(State.initialState, currentState)
         }

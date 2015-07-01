@@ -78,8 +78,14 @@ import rx.lang.kotlin.PublishSubject
     private fun applyEquals(state: State): State {
       when (state) {
         is State.Operation -> {
-          val result = applyBinaryOperation(state.left, state.action, state.displayNumber.toDecimal())
-          return state.copy(left = result, displayNumber = DisplayNumber.zero)
+          val right = if (state.displayNumber == DisplayNumber.zero) {
+            state.lastRightOperand
+          } else {
+            state.displayNumber.toDecimal()
+          }
+          val result = executeBinaryOperation(state.left, state.action, right)
+          return state.copy(left = result, displayNumber = DisplayNumber.zero,
+              lastRightOperand = right)
         }
         else -> return state
       }
@@ -119,7 +125,7 @@ import rx.lang.kotlin.PublishSubject
       }
     }
 
-    private fun applyBinaryOperation(left: Double, action: Action, right: Double): Double {
+    private fun executeBinaryOperation(left: Double, action: Action, right: Double): Double {
       return toBinaryOperation(action) (left, right)
     }
 
