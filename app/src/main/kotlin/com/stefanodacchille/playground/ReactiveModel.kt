@@ -80,13 +80,13 @@ import rx.lang.kotlin.PublishSubject
       when (state) {
         is State.Operation -> {
           val right = if (state.displayNumber == DisplayNumber.zero) {
-            state.lastRightOperand
+            state.latestRightOperand
           } else {
             state.displayNumber.toDecimal()
           }
           val result = executeBinaryOperation(state.left, state.action, right)
-          return state.copy(left = result, displayNumber = DisplayNumber.zero,
-              lastRightOperand = right)
+            return state.copy(left = result, displayNumber = DisplayNumber.zero,
+                lastRightOperand = right)
         }
         else -> return state
       }

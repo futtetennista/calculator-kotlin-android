@@ -6,7 +6,7 @@ open class State() {
   data class Operation(val left: Double,
                        val action: Action,
                        val displayNumber: DisplayNumber,
-                       val lastRightOperand: Double = 0.0) : State()
+                       val latestRightOperand: Double = 0.0) : State()
   data class Error(val msg: String) : State()
 
   companion object {
