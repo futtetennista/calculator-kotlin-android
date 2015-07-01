@@ -23,8 +23,8 @@ public class Screen : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    buildLayout()
     // TODO: persist state
-    buildLayout(DisplayNumber.zero)
 
     subscription = ReactiveModel.updateObservable.subscribe { state -> updateDisplay(state) }
   }
@@ -43,12 +43,12 @@ public class Screen : Activity() {
     super.onSaveInstanceState(outState, outPersistentState)
   }
 
-  private fun buildLayout(text: DisplayNumber) {
+  private fun buildLayout() {
     gridLayout {
       orientation = GridLayout.HORIZONTAL
       columnCount = 4
 
-      display(text).layoutParams {
+      display().layoutParams {
         rowSpec = GridLayout.spec(0, 2)
         columnSpec = GridLayout.spec(0, 4)
         setGravity(Gravity.FILL_HORIZONTAL)
@@ -117,8 +117,8 @@ public class Screen : Activity() {
     }
   }
 
-  private fun _GridLayout.display(text: DisplayNumber): TextView {
-    return textView(text.toDisplay()) {
+  private fun _GridLayout.display(): TextView {
+    return textView() {
       id = R.id.display
       backgroundColor = getResources().getColor(android.R.color.black)
       gravity = Gravity.BOTTOM

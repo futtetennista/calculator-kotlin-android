@@ -8,7 +8,8 @@ import rx.lang.kotlin.PublishSubject
 
     val actionSubject = PublishSubject<Action>()
 
-    val updateObservable = actionSubject.scan(State.initialState, { state, action ->
+    val updateObservable = actionSubject.startWith(Action.ZERO)
+                                        .scan(State.initialState, { state, action ->
       when (action) {
         Action.ADD, Action.DIV, Action.MUL, Action.SUB -> applyBinaryOperation(action, state)
         Action.EQUALS -> applyEquals(state)
